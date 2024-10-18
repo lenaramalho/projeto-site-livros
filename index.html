@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bshare</title>
+
+    <!-- Link para a fonte Tenon -->
+    <link href="https://db.onlinewebfonts.com/c/d1d2297ef46b078a7fddb1fb26549723?family=FSP+DEMO+-+Tenon" rel="stylesheet" type="text/css"/>
+    
+    <!-- Link para a fonte GT Super Display Regular -->
+    <link href="https://db.onlinewebfonts.com/c/be33e70b70cc4c1454e8935aea8c66e3?family=GT+Super+Display+Regular" rel="stylesheet" type="text/css"/>
+
+    <!-- Script do Tailwind CSS (usando o CDN de configuração) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Link do Phosphor Icons (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/phosphor-icons@1.4.2/src/index.min.js"></script>
+
+    <style>
+        /* Aplica a fonte Tenon no body */
+        body {
+            font-family: 'FSP DEMO - Tenon', sans-serif;
+        }
+
+        /* Aplica a fonte GT Super Display no h1 */
+        h1, #botao-descubra {
+            font-family: 'GT Super Display Regular', sans-serif;
+        }
+
+        /* Ajuste para o menu mobile */
+        #mobile-menu {
+            padding: 0; /* Remove padding extra */
+            margin: 0; /* Remove margem extra */
+            height: auto; /* Garante que o menu tenha altura dinâmica */
+            overflow: hidden; /* Impede que o menu ultrapasse a altura */
+        }
+
+        #mobile-menu ul {
+            padding: 0; /* Remove padding extra do ul */
+            margin: 0; /* Remove margem extra do ul */
+            list-style: none; /* Remove qualquer estilo de lista */
+            display: flex;
+            flex-direction: column;
+            gap: 1rem; /* Define o espaçamento entre os itens */
+            text-align: center; /* Alinha os itens ao centro */
+        }
+
+        #mobile-menu li {
+            padding: 0.5rem 0; /* Ajusta o padding de cada item */
+        }
+
+        /* Estilo para o h1 no mobile com o menu aberto */
+        .h1-mobile-menu-open {
+            margin-top: 5px !important; /* Ajuste do espaço superior */
+            padding-top: 5px !important; /* Ajuste do padding */
+        }
+
+        .carousel {
+            width: 100%; /* O container ocupa 100% da largura da tela */
+            overflow: hidden; /* Oculta o excesso de itens fora da tela */
+        }
+
+        .carousel-inner {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            width: calc(160px * 5 + 1rem * 4); /* Largura para 5 itens com 1rem de espaço entre eles */
+        }
+
+        .carousel-item {
+            flex-shrink: 0;
+            width: 160px;  /* Largura do item */
+            height: 280px;  /* Altura do item */
+            margin-right: 1rem;  /* Espaçamento entre os itens */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .carousel-item img {
+            width: 100px;  /* Largura da imagem */
+            height: 200px;  /* Altura da imagem */
+            object-fit: contain;  /* Ajusta a imagem dentro do card sem distorcer */
+            margin: 0 auto;  /* Centraliza a imagem */
+        }
+
+        .text-container {
+            flex: 1;
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .carousel-item h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .carousel-item p {
+            font-size: 0.875rem;
+            color: #4a5568;
+            text-align: center;
+            overflow: hidden;  /* Esconde o texto extra */
+            text-overflow: ellipsis;  /* Adiciona '...' se o texto for muito longo */
+            white-space: nowrap;  /* Impede o texto de quebrar linha */
+        }
+
+        .dots-nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .dot.active {
+            background-color: #333;
+        }
+
+    </style>
+</head>
+<body class="bg-[#f7e1d2] tracking-wide">
+
+    <div class="bg-[#163828] text-white text-center p-3.5">
+        <p>Não perca novos conteúdos. <a href="" class="underline underline-offset-4 decoration-solid">Se inscreva em nossa Newsletter.</a></p>
+    </div>
+
+    <header class="bg-transparent py-4">
+        <nav class="flex items-center justify-between px-6 mx-auto w-full max-w-screen-xl">
+            <h3 class="text-2xl flex items-center space-x-2">
+                <i class="ph-duotone ph-book-bookmark text-[#163828] text-4xl"></i>
+                <span class="text-2xl md:text-5xl tracking-tighter font-semibold text-[#163828]">bookshare</span>
+            </h3>
+
+            <!-- Menu de Navegação (Desktop) -->
+            <div class="hidden md:flex space-x-6">
+                <ul class="flex items-center gap-4 tracking-wider">
+                    <li><a href="#" class="text-lg font-semibold">Home</a></li>
+                    <li><a href="#" class="text-lg font-semibold">Resenhas</a></li>
+                    <li><a href="#" class="text-lg font-semibold">Leituras do Mês</a></li>
+                    <li><a href="#" class="text-lg font-semibold">Favoritos</a></li>
+                    <li><a href="#" class="text-lg font-semibold">Newsletter</a></li>
+                </ul>
+            </div>
+
+            <!-- Ícone de Menu (Hamburguer) -->
+            <div class="md:hidden flex items-center">
+                <button id="hamburger-icon" class="text-3xl text-[#163828]" aria-label="Abrir menu">
+                    <i class="ph ph-list"></i> <!-- Usando o ícone do Phosphor -->
+                </button>
+            </div>
+
+            <!-- Link de Login -->
+            <a href="#" class="text-base bg-[#163828] text-white py-2 px-4 rounded-3xl border border-[#163828] hover:bg-[#f7e1d2] hover:border-[#163828] hover:text-[#163828] transition-all duration-300">Acesse sua conta</a>
+        </nav>
+
+        <!-- Menu de Navegação (Mobile) -->
+        <div id="mobile-menu" class="md:hidden hidden bg-[#f7e1d2] w-full">
+            <ul>
+                <li><a href="#" class="text-base font-semibold">Home</a></li>
+                <li><a href="#" class="text-base font-semibold">Resenhas</a></li>
+                <li><a href="#" class="text-base font-semibold">Leituras do Mês</a></li>
+                <li><a href="#" class="text-base font-semibold">Favoritos</a></li>
+                <li><a href="#" class="text-base font-semibold">Newsletter</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main>
+        <section class="flex flex-col items-center">
+            <h1 id="titulo" class="text-center text-6xl pt-9 mt-16 tracking-normal md:text-7xl">Leia. <i>Imagine</i>. Compartilhe.</h1>
+            <p class="text-center text-lg w-full sm:w-3/4 md:w-1/2 lg:w-1/3 m-10 p-2">Uma plataforma para aqueles que gostam de descobrir universos e compartilhar histórias épicas.</p>
+            <hr class="border-t-3 border-gray-600 my-8 w-4/5">
+        </section>
+
+        <section class="flex flex-col items-center gap-4">
+            <div class="md:flex justify-between">
+                <div class="flex flex-col items-center gap-4">
+                    <h3 class="text-2xl font-semibold">Procurando o que ler a seguir?</h3>
+                    <p>Escolha sua próxima leitura com base no que está em alta, com resenhas feitas por nossos leitores.</p>
+                </div>
+            </div>
+            <section>
+                <div class="container mx-auto px-4 pt-4 py-10">
+                    <div class="relative overflow-hidden">
+                        <div class="carousel-inner" id="carousel">
+                            <!-- Card do Livro 1 -->
+                            <div class="carousel-item bg-[#fffcfa80] rounded-lg shadow-md overflow-hidden">
+                                <img class="w-full h-full object-contain contrast-75" src="assets/imgs/amendoas-livro.jpg.webp" alt="Capa do livro">
+                                <div class="text-container">
+                                    <h3>Amêndoas</h3>
+                                    <p>Won-pyung Sohn</p>
+                                </div>
+                            </div>
+                            <!-- Card do Livro 2 -->
+                            <div class="carousel-item bg-[#fffcfa80] rounded-lg shadow-md overflow-hidden">
+                                <img class="w-full h-full object-contain contrast-75" src="assets/imgs/divinos-rivais.jpg.webp" alt="Capa do livro">
+                                <div class="text-container">
+                                    <h3>Divinos Rivais</h3>
+                                    <p>Rebecca Ross</p>
+                                </div>
+                            </div>
+                            <!-- Card do Livro 3 -->
+                            <div class="carousel-item bg-[#fffcfa80] rounded-lg shadow-md overflow-hidden">
+                                <img class="w-full h-full object-contain contrast-75" src="assets/imgs/uma-familia-feliz.jpg.webp" alt="Capa do livro">
+                                <div class="text-container">
+                                    <h3>Uma Família Feliz</h3>
+                                    <p>Raphael Montes</p>
+                                </div>
+                            </div>
+                            <!-- Card do Livro 4 -->
+                            <div class="carousel-item bg-[#fffcfa80] rounded-lg shadow-md overflow-hidden">
+                                <img class="w-full h-full object-contain contrast-75" src="assets/imgs/admiravel-mundo-novo-e1718291225396.jpg" alt="Capa do livro">
+                                <div class="text-container">
+                                    <h3>Admirável Mundo Novo</h3>
+                                    <p>Aldous Huxley</p>
+                                </div>
+                            </div>
+                            <!-- Card do Livro 5 -->
+                            <div class="carousel-item bg-[#fffcfa80] rounded-lg shadow-md overflow-hidden">
+                                <img class="w-full h-full object-contain contrast-75" src="assets/imgs/tres-livro.jpg.webp" alt="Capa do livro">
+                                <div class="text-container">
+                                    <h3>Tres</h3>
+                                    <p>Valérie Perrin</p>
+                                </div>
+                            </div>
+                            <!-- Card do Livro 6 -->
+                            <div class="carousel-item bg-[#fffcfa80] rounded-lg shadow-md overflow-hidden">
+                                <img class="w-full h-full object-contain contrast-75" src="assets/imgs/uma-sombra-na-brasa.jpg.webp" alt="Capa do livro">
+                                <div class="text-container">
+                                    <h3>Uma Sombra na Brasa</h3>
+                                    <p>Jennifer L. Armentrout</p>
+                                </div>
+                            </div>
+
+                            <div class="carousel-item bg-[#fffcfa80] rounded-lg shadow-md overflow-hidden">
+                                <img class="w-full h-full object-contain contrast-75" src="assets/imgs/wolfsong.jpg.webp" alt="Capa do livro">
+                                <div class="text-container">
+                                    <h3>Wolfsong</h3>
+                                    <p>TJ Klune</p>
+                                </div>
+                            </div>
+
+                            <div class="carousel-item bg-[#fffcfa80] rounded-lg shadow-md overflow-hidden">
+                                <img class="w-full h-full object-contain contrast-75" src="assets/imgs/o-colecionador-livro.jpg.webp" alt="Capa do livro">
+                                <div class="text-container">
+                                    <h3>O Colecionador</h3>
+                                    <p>John Fowles</p>
+                                </div>
+                            </div>
+
+                            <div class="carousel-item bg-[#fffcfa80] rounded-lg shadow-md overflow-hidden">
+                                <img class="w-full h-full object-contain contrast-75" src="assets/imgs/a-quarta-asa.jpg.webp" alt="Capa do livro">
+                                <div class="text-container">
+                                    <h3>Quarta Asa</h3>
+                                    <p>Rebecca Yarros</p>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <!-- Navegação do Carrossel -->
+                        <div class="dots-nav">
+                            <div class="dot active" data-index="0"></div>
+                            <div class="dot" data-index="1"></div>
+                            <div class="dot" data-index="2"></div>
+                            <div class="dot" data-index="3"></div>
+                            <div class="dot" data-index="4"></div>
+                        </div>
+                    </div>
+                </div>
+                </section>
+
+                <a id="botao-descubra" class="bg-[#ee4b4a] py-2.5 px-5 rounded-3xl text-white gap-4" href="">Top Semanal Bookshare <i class="ph ph-arrow-right bg-white rounded-3xl p-2 text-sm text-black"></i></a>
+                </section>
+
+                <section class="flex flex-col items-center mt-10">
+                    <h2 class="text-2xl font-semibold">Junte-se a melhor comunidade literária do Brasil!</h2>
+                    <div class="flex">
+                        <div>
+                            <h3>Resenhas</h3>
+                            <p>Publique resenhas de suas leituras favoritas (ou nem tao favoritas assim)</p>
+                        </div>
+                        <div>
+                            <h3>Listas de Recomendacoes</h3>
+                        </div>
+                        <div>
+                            <h3>Guias de Leitura</h3>
+                        </div>
+                        <div>
+                            <h3>Clube do Livro</h3>
+                        </div>
+                    </div>
+                </section>
+        </main>
+
+    <!-- Script para alternar a visibilidade do menu e ajustar o título -->
+    <script>
+        const hamburgerIcon = document.getElementById('hamburger-icon');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const titulo = document.getElementById('titulo');
+
+        hamburgerIcon.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            
+            if (mobileMenu.classList.contains('hidden')) {
+                titulo.classList.remove('h1-mobile-menu-open');
+            } else {
+                titulo.classList.add('h1-mobile-menu-open');
+            }
+        });
+    </script>
+
+    <!-- Script para o carrossel -->
+    <script>
+        let currentIndex = 0;
+        const totalItems = 5; // Total de itens no carrossel
+        const itemsPerView = 3; // Itens visíveis por vez
+        const itemWidth = 160 + 16;  // Largura do item (160px) + margem direita (16px)
+        const carousel = document.getElementById("carousel");
+        const dots = document.querySelectorAll('.dot');
+        const items = document.querySelectorAll('.carousel-item');
+        const itemContents = document.querySelectorAll('.carousel-item-content');
+    
+        // Função para atualizar a posição do carrossel
+        function updateCarouselPosition() {
+            const offset = -currentIndex * itemWidth; // Calcula o deslocamento baseado no índice
+            carousel.style.transition = 'transform 0.5s ease-in-out'; // Aplica transição suave
+            carousel.style.transform = `translateX(${offset}px)`; // Move o carrossel
+    
+            // Atualiza o estado dos pontinhos
+            dots.forEach(dot => dot.classList.remove('active'));
+            dots[currentIndex % dots.length].classList.add('active'); // Atualiza ponto ativo
+    
+            // Aplica o efeito de aumento sutil para o card centralizado
+            items.forEach((item, index) => {
+                if (index === (currentIndex + 2) % totalItems) { // Card centralizado
+                    item.style.transform = "scale(1.05)"; // Aumenta um pouco o card centralizado
+                    item.style.zIndex = "10"; // Garante que o card centralizado fique acima dos outros
+                } else {
+                    item.style.transform = "scale(1)"; // Os outros cards não são escalados
+                    item.style.zIndex = "1"; // Coloca os outros cards abaixo
+                }
+            });
+        }
+    
+        // Função para movimentar o carrossel quando um ponto é clicado
+        dots.forEach(dot => {
+            dot.addEventListener('click', (event) => {
+                const index = parseInt(event.target.getAttribute('data-index'));
+                currentIndex = index;
+                updateCarouselPosition();
+            });
+        });
+    
+        // Função para avançar automaticamente
+        function autoMoveCarousel() {
+            currentIndex = (currentIndex + 1) % totalItems; // Avança o índice de forma circular
+            updateCarouselPosition(); // Atualiza a posição do carrossel e os efeitos dos cards
+        }
+    
+        // Inicia o movimento automático a cada 3 segundos
+        const autoMoveInterval = setInterval(autoMoveCarousel, 3000);
+    
+        // Inicializa o carrossel
+        window.onload = function() {
+            updateCarouselPosition();  // Atualiza a posição inicial
+        };
+    </script>
+    
+    
+    
+</body>
+</html>
